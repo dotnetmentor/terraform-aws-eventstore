@@ -3,7 +3,8 @@
 Terraform module for bringing up a clustered Eventstore in AWS.
 
 **NOTE: This module is not ready for use in production!!!**
-**NOTE: Some of the settings have UNSAFE default values!!!** 
+
+**NOTE: Some of the settings have UNSAFE default values!!!**
 
 ## Additional information
 
