@@ -252,7 +252,7 @@ resource "aws_security_group_rule" "allow_all_outgoing" {
   type = "egress"
 
   description     = "Allow all outgoing"
-  from_port   = 0
+  from_port   = -1
   to_port     = 0
   protocol    = -1
   cidr_blocks = ["0.0.0.0/0"]
