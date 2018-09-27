@@ -26,6 +26,28 @@ mkdir -p /var/log/journal
 systemd-tmpfiles --create --prefix /var/log/journal
 systemctl restart systemd-journald
 
+echo
+echo 'Ensuring chronyd is setup (NTP)'
+apt-get -y install chrony
+cp /etc/chrony/chrony.conf /etc/chrony/orig_chrony.conf
+echo "# chrony configured with Amazon Time Sync Service
+server 169.254.169.123 prefer iburst
+pool 2.debian.pool.ntp.org offline iburst
+keyfile /etc/chrony/chrony.keys
+commandkey 1
+driftfile /var/lib/chrony/chrony.drift
+log tracking measurements statistics
+logdir /var/log/chrony
+maxupdateskew 100.0
+dumponexit
+dumpdir /var/lib/chrony
+logchange 0.5
+hwclockfile /etc/adjtime
+rtcsync
+" > /etc/chrony/chrony.conf
+service chrony restart
+service chrony status
+
 if [[ "$${LOG_FORWARDING_ENABLED}" == "true" ]]; then
   echo
   echo 'Installing fluentbit'
