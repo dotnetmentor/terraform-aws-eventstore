@@ -100,6 +100,11 @@ variable "instance_volume_protection" {
   default     = false
 }
 
+variable "instance_timezone" {
+  description = "The timezone in which the instance should run"
+  default     = "UTC"
+}
+
 variable "log_forwarding_elasticsearch_enabled" {
   description = "Enable log aggregation using fluentbit and eleasticsearch"
   default     = false
