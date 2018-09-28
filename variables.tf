@@ -14,10 +14,6 @@ variable "cluster_name" {
   description = "The name of the Eventstore cluster to create"
 }
 
-variable "cluster_size" {
-  description = "The desired number of nodes in the Eventstore cluster (quorum size)"
-}
-
 variable "cluster_vpc_id" {
   description = "Id of the VPC to launch Eventstore in"
 }
@@ -47,6 +43,21 @@ variable "key_pair_publickey" {
 variable "cluster_version" {
   description = "The version of Eventstore to run the cluster on"
   default     = "4.0.3"
+}
+
+variable "cluster_size" {
+  description = "The desired number of nodes in the Eventstore cluster ASG (quorum size)"
+  default     = 3
+}
+
+variable "cluster_min_size" {
+  description = "The minimum number of nodes in the Eventstore cluster ASG. If set to -1 the value will be calculated based on cluster_size."
+  default     = -1
+}
+
+variable "cluster_max_size" {
+  description = "The maximum number of nodes in the Eventstore cluster ASG. If set to -1 the value will be calculated based on cluster_size."
+  default     = -1
 }
 
 variable "cluster_dns" {

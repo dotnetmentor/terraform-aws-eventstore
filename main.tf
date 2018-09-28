@@ -20,9 +20,9 @@ resource "aws_autoscaling_group" "eventstore" {
   name                 = "${var.cluster_name}-${var.environment}-eventstore-asg"
   launch_configuration = "${aws_launch_configuration.eventstore.id}"
 
-  min_size         = "0"
-  max_size         = "5"
   desired_capacity = "${var.cluster_size}"
+  min_size         = "${var.cluster_min_size == -1 ? (floor(var.cluster_size / 2) + 1) : var.cluster_min_size}"
+  max_size         = "${var.cluster_max_size == -1 ? (var.cluster_size * 2) : var.cluster_min_size}"
 
   availability_zones  = "${var.cluster_azs}"
   vpc_zone_identifier = "${var.cluster_subnets}"
