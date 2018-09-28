@@ -26,13 +26,14 @@ mkdir -p /var/log/journal
 systemd-tmpfiles --create --prefix /var/log/journal
 systemctl restart systemd-journald
 
+echo
 echo "Ensure timezone is set to ${instance_timezone}"
 timedatectl set-timezone ${instance_timezone}
 timedatectl
 if ! timedatectl | grep "${instance_timezone}" -q; then echo "Failed to set timezone!"; exit 1; fi
 
 echo
-echo 'Ensuring chronyd is setup (NTP)'
+echo 'Ensuring chrony is setup (NTP)'
 apt-get -y install chrony
 cp /etc/chrony/chrony.conf /etc/chrony/orig_chrony.conf
 echo "# chrony configured with Amazon Time Sync Service
@@ -76,7 +77,7 @@ if [[ "$${LOG_FORWARDING_ENABLED}" == "true" ]]; then
 [INPUT]
     Name            systemd
     Path            /var/log/journal/
-    Read_From_Tail  True
+    Read_From_Tail  False
     Tag             eventstore-host-${environment}
     Mem_Buf_Limit   20MB
 
