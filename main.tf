@@ -142,6 +142,7 @@ data "template_file" "eventstore_init" {
     log_forwarding_elasticsearch_enabled  = "${var.log_forwarding_elasticsearch_enabled ? true : false}"
     log_forwarding_elasticsearch_endpoint = "${var.log_forwarding_elasticsearch_endpoint}"
     log_forwarding_elasticsearch_port     = "${var.log_forwarding_elasticsearch_port}"
+    instance_timezone                     = "${var.instance_timezone}"
   }
 }
 

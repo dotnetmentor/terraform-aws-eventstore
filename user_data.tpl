@@ -26,6 +26,11 @@ mkdir -p /var/log/journal
 systemd-tmpfiles --create --prefix /var/log/journal
 systemctl restart systemd-journald
 
+echo "Ensure timezone is set to ${instance_timezone}"
+timedatectl set-timezone ${instance_timezone}
+timedatectl
+if ! timedatectl | grep "${instance_timezone}" -q; then echo "Failed to set timezone!"; exit 1; fi
+
 echo
 echo 'Ensuring chronyd is setup (NTP)'
 apt-get -y install chrony
