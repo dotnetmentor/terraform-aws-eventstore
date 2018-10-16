@@ -97,7 +97,7 @@ locals {
 }
 
 resource "aws_launch_configuration" "eventstore" {
-  name          = "${var.cluster_name}-${var.environment}-eventstore-lc-${substr(uuid(),0,8)}"
+  name_prefix   = "${var.cluster_name}-${var.environment}-eventstore-lc"
   image_id      = "${var.instance_ami != "" ? var.instance_ami : data.aws_ami.ubuntu.id}"
   instance_type = "${var.instance_type}"
 
