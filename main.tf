@@ -168,7 +168,7 @@ resource "aws_security_group" "eventstore" {
 resource "aws_security_group_rule" "ssh_external" {
   type = "ingress"
 
-  description     = "SSH (External)"
+  description = "SSH (External)"
   from_port   = 22
   to_port     = 22
   protocol    = "tcp"
@@ -180,7 +180,7 @@ resource "aws_security_group_rule" "ssh_external" {
 resource "aws_security_group_rule" "client_tcp_external" {
   type = "ingress"
 
-  description     = "Clients TCP (External)"
+  description = "Clients TCP (External)"
   from_port   = 1113
   to_port     = 1113
   protocol    = "tcp"
@@ -192,7 +192,7 @@ resource "aws_security_group_rule" "client_tcp_external" {
 resource "aws_security_group_rule" "client_http_external" {
   type = "ingress"
 
-  description     = "Clients HTTP (External)"
+  description = "Clients HTTP (External)"
   from_port   = 2113
   to_port     = 2113
   protocol    = "tcp"
@@ -204,11 +204,11 @@ resource "aws_security_group_rule" "client_http_external" {
 resource "aws_security_group_rule" "tcp_internal_1112" {
   type = "ingress"
 
-  description     = "TCP (Internal)"
-  from_port = 1112
-  to_port   = 1112
-  protocol  = "tcp"
-  self      = true
+  description = "TCP (Internal)"
+  from_port   = 1112
+  to_port     = 1112
+  protocol    = "tcp"
+  self        = true
 
   security_group_id = "${aws_security_group.eventstore.id}"
 }
@@ -216,11 +216,11 @@ resource "aws_security_group_rule" "tcp_internal_1112" {
 resource "aws_security_group_rule" "tcp_internal_1113" {
   type = "ingress"
 
-  description     = "TCP (Internal)"
-  from_port = 1113
-  to_port   = 1113
-  protocol  = "tcp"
-  self      = true
+  description = "TCP (Internal)"
+  from_port   = 1113
+  to_port     = 1113
+  protocol    = "tcp"
+  self        = true
 
   security_group_id = "${aws_security_group.eventstore.id}"
 }
@@ -228,11 +228,11 @@ resource "aws_security_group_rule" "tcp_internal_1113" {
 resource "aws_security_group_rule" "tcp_internal_2112" {
   type = "ingress"
 
-  description     = "TCP (Internal)"
-  from_port = 2112
-  to_port   = 2112
-  protocol  = "tcp"
-  self      = true
+  description = "TCP (Internal)"
+  from_port   = 2112
+  to_port     = 2112
+  protocol    = "tcp"
+  self        = true
 
   security_group_id = "${aws_security_group.eventstore.id}"
 }
@@ -240,11 +240,11 @@ resource "aws_security_group_rule" "tcp_internal_2112" {
 resource "aws_security_group_rule" "tcp_internal_2113" {
   type = "ingress"
 
-  description     = "TCP (Internal)"
-  from_port = 2113
-  to_port   = 2113
-  protocol  = "tcp"
-  self      = true
+  description = "TCP (Internal)"
+  from_port   = 2113
+  to_port     = 2113
+  protocol    = "tcp"
+  self        = true
 
   security_group_id = "${aws_security_group.eventstore.id}"
 }
@@ -252,7 +252,7 @@ resource "aws_security_group_rule" "tcp_internal_2113" {
 resource "aws_security_group_rule" "allow_all_outgoing" {
   type = "egress"
 
-  description     = "Allow all outgoing"
+  description = "Allow all outgoing"
   from_port   = -1
   to_port     = 0
   protocol    = -1
