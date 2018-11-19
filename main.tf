@@ -130,7 +130,7 @@ resource "aws_launch_configuration" "eventstore" {
 }
 
 data "template_file" "eventstore_init" {
-  template = "${file("${path.module}/user_data.tpl")}"
+  template = "${file("${path.module}/user_data.sh")}"
 
   vars {
     environment                           = "${var.environment}"
