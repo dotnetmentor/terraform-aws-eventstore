@@ -130,3 +130,13 @@ variable "log_forwarding_elasticsearch_port" {
   description = "The elasticsearch host port to send logs to"
   default     = 443
 }
+
+variable "backups_s3_enabled" {
+  description = "Enable backups to S3"
+  default     = false
+}
+
+variable "backups_s3_setup_script" {
+  description = "Script that will be executed during init to setup backups"
+  default     = ""
+}

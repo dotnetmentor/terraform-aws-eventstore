@@ -10,6 +10,11 @@ export ES_INSTALL_URL="https://packagecloud.io/install/repositories/EventStore/E
 export ES_DB_PATH="$${DATA_DIR:?}/eventstore/data"
 export ES_LOG_PATH="$${DATA_DIR:?}/eventstore/log"
 export LOG_FORWARDING_ENABLED='${log_forwarding_elasticsearch_enabled}'
+export BACKUPS_S3_ENABLED='${backups_s3_enabled}'
+export BACKUPS_S3_BUCKET_NAME='${backups_s3_bucket_name}'
+export BACKUPS_S3_BUCKET_REGION='${backups_s3_bucket_region}'
+export BACKUPS_S3_AWS_ACCESS_KEY_ID='${backups_s3_aws_access_key_id}'
+export BACKUPS_S3_AWS_SECRET_ACCESS_KEY_ID='${backups_s3_aws_secret_access_key}'
 
 echo
 echo 'Ensuring apt-get is updated (at least once)'
@@ -156,3 +161,8 @@ echo
 echo 'Starting eventstore'
 systemctl start eventstore
 systemctl status eventstore
+
+if [[ "$${BACKUPS_S3_ENABLED}" == 'true' ]]; then
+  echo 'Configuring S3 backups (using backups_s3_setup_script)'
+  ${backups_s3_setup_script}
+fi

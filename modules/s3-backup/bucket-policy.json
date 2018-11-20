@@ -1,0 +1,18 @@
+{
+    "Version": "2012-10-17",
+    "Id": "EventstoreBackupRestorePolicy",
+    "Statement": [
+        {
+            "Sid": "BackupRestorePolicy",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "${iam_user_arn}"
+            },
+            "Action": "s3:*",
+            "Resource": [
+                "${s3_bucket_arn}",
+                "${s3_bucket_arn}/*"
+            ]
+        }
+    ]
+}

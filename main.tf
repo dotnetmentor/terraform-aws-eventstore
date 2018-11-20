@@ -3,6 +3,10 @@ provider "aws" {
   region  = "${var.region}"
 }
 
+locals {
+  full_cluster_name = "${var.cluster_name}-${var.environment}-eventstore"
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # KEY PAIR USED FOR EVENTSTORE INSTANCES
 # ---------------------------------------------------------------------------------------------------------------------
@@ -17,7 +21,7 @@ resource "aws_key_pair" "deployer" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_autoscaling_group" "eventstore" {
-  name                 = "${var.cluster_name}-${var.environment}-eventstore-asg"
+  name                 = "${local.full_cluster_name}-asg"
   launch_configuration = "${aws_launch_configuration.eventstore.id}"
 
   desired_capacity = "${var.cluster_size}"
@@ -45,7 +49,7 @@ resource "aws_autoscaling_group" "eventstore" {
   tags = [
     {
       key                 = "Name"
-      value               = "${var.cluster_name}-${var.environment}-eventstore"
+      value               = "${local.full_cluster_name}"
       propagate_at_launch = true
     },
     {
@@ -97,7 +101,7 @@ locals {
 }
 
 resource "aws_launch_configuration" "eventstore" {
-  name_prefix   = "${var.cluster_name}-${var.environment}-eventstore-lc"
+  name_prefix   = "${local.full_cluster_name}-lc"
   image_id      = "${var.instance_ami != "" ? var.instance_ami : data.aws_ami.ubuntu.id}"
   instance_type = "${var.instance_type}"
 
@@ -133,16 +137,24 @@ data "template_file" "eventstore_init" {
   template = "${file("${path.module}/user_data.sh")}"
 
   vars {
-    environment                           = "${var.environment}"
-    cluster_version                       = "${var.cluster_version}"
-    cluster_size                          = "${var.cluster_size}"
-    cluster_dns                           = "${var.cluster_dns}"
-    external_ip_type                      = "${var.cluster_external_ip_type == "private" ? "local" : "public"}"
-    internal_ip_type                      = "${var.cluster_internal_ip_type == "private" ? "local" : "public"}"
+    environment       = "${var.environment}"
+    cluster_version   = "${var.cluster_version}"
+    cluster_size      = "${var.cluster_size}"
+    cluster_dns       = "${var.cluster_dns}"
+    external_ip_type  = "${var.cluster_external_ip_type == "private" ? "local" : "public"}"
+    internal_ip_type  = "${var.cluster_internal_ip_type == "private" ? "local" : "public"}"
+    instance_timezone = "${var.instance_timezone}"
+
     log_forwarding_elasticsearch_enabled  = "${var.log_forwarding_elasticsearch_enabled ? true : false}"
     log_forwarding_elasticsearch_endpoint = "${var.log_forwarding_elasticsearch_endpoint}"
     log_forwarding_elasticsearch_port     = "${var.log_forwarding_elasticsearch_port}"
-    instance_timezone                     = "${var.instance_timezone}"
+
+    backups_s3_enabled               = "${var.backups_s3_enabled ? true : false}"
+    backups_s3_setup_script          = "${var.backups_s3_setup_script}"
+    backups_s3_bucket_name           = "${var.backups_s3_enabled ? module.backups.bucket_name : ""}"
+    backups_s3_bucket_region         = "${var.backups_s3_enabled ? module.backups.bucket_region : ""}"
+    backups_s3_aws_access_key_id     = "${var.backups_s3_enabled ? module.backups.iam_access_key_id : ""}"
+    backups_s3_aws_secret_access_key = "${var.backups_s3_enabled ? module.backups.iam_secret_access_key : ""}"
   }
 }
 
@@ -151,11 +163,11 @@ data "template_file" "eventstore_init" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_security_group" "eventstore" {
-  name   = "${var.cluster_name}-${var.environment}-eventstore-sg"
+  name   = "${local.full_cluster_name}-sg"
   vpc_id = "${var.cluster_vpc_id}"
 
   tags = {
-    Name        = "${var.cluster_name}-${var.environment}-eventstore-sg"
+    Name        = "${local.full_cluster_name}-sg"
     Environment = "${var.environment}"
     Terraform   = "true"
   }
@@ -259,4 +271,17 @@ resource "aws_security_group_rule" "allow_all_outgoing" {
   cidr_blocks = ["0.0.0.0/0"]
 
   security_group_id = "${aws_security_group.eventstore.id}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# BACKUPS
+# ---------------------------------------------------------------------------------------------------------------------
+
+module "backups" {
+  source = "./modules/s3-backup"
+
+  enabled       = "${var.backups_s3_enabled}"
+  bucket_region = "${var.region}"
+  bucket_name   = "${local.full_cluster_name}-backups"
+  cluster_name  = "${local.full_cluster_name}"
 }
