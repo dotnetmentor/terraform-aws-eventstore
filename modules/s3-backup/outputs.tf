@@ -7,7 +7,8 @@ output "bucket_region" {
 }
 
 output "iam_access_key_id" {
-  value = "${element(concat(aws_iam_access_key.backup.*.id, list("")), 0)}"
+  value       = "${element(concat(aws_iam_access_key.backup.*.id, list("")), 0)}"
+  sensitive   = true
 }
 
 output "iam_secret_access_key" {
