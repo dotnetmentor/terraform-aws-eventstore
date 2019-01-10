@@ -80,11 +80,12 @@ if [[ "$${LOG_FORWARDING_ENABLED}" == "true" ]]; then
     Plugins_File plugins.conf
 
 [INPUT]
-    Name            systemd
-    Path            /var/log/journal/
-    Read_From_Tail  False
-    Tag             eventstore-host-${environment}
-    Mem_Buf_Limit   20MB
+    Name              systemd
+    Path              /var/log/journal/
+    Read_From_Tail    False
+    Tag               eventstore-host-${environment}
+    Mem_Buf_Limit     20MB
+    Strip_Underscores True
 
 [OUTPUT]
     Name            es
