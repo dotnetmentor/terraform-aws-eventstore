@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 variable "enabled" {
-  description = "When true, creates resources to enabled backups"
+  description = "When true, creates resources to enable backups"
 }
 
 variable "bucket_region" {
