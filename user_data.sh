@@ -167,7 +167,7 @@ GossipTimeoutMs: 3000
 GossipAllowedDifferenceMs: 15000
 RunProjections: None
 StartStandardProjections: True
-StatsPeriodSec: 30
+StatsPeriodSec: 60
 MonoMinThreadpoolSize: 100
 UseInternalSsl: False
 SkipDbVerify: False
