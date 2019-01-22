@@ -142,20 +142,35 @@ echo
 echo 'Configuring eventstore'
 cat <<EOFCONF > "/etc/eventstore/eventstore.conf"
 ---
-RunProjections: None
-StartStandardProjections: True
 Db: $${ES_DB_PATH}
 Log: $${ES_LOG_PATH}
 ClusterSize: ${cluster_size}
 ClusterGossipPort: 2112
 ClusterDns: ${cluster_dns}
-ExtIp: $$(ec2metadata --local-ipv4)
 IntIp: $$(ec2metadata --local-ipv4)
-ExtIpAdvertiseAs: $$(ec2metadata --${external_ip_type}-ipv4)
+ExtIp: $$(ec2metadata --local-ipv4)
 IntIpAdvertiseAs: $$(ec2metadata --${internal_ip_type}-ipv4)
+ExtIpAdvertiseAs: $$(ec2metadata --${external_ip_type}-ipv4)
 IntHttpPrefixes: http://*:2112/
 ExtHttpPrefixes: http://*:2113/
-AddInterfacePrefixes: false
+AddInterfacePrefixes: False
+IntHttpPort: 2112
+ExtHttpPort: 2113
+IntTcpPort: 1112
+ExtTcpPort: 1113
+IntTcpHeartbeatInterval: 1000
+IntTcpHeartbeatTimeout: 3000
+ExtTcpHeartbeatInterval: 1000
+ExtTcpHeartbeatTimeout: 3000
+GossipIntervalMs: 500
+GossipTimeoutMs: 3000
+GossipAllowedDifferenceMs: 15000
+RunProjections: None
+StartStandardProjections: True
+StatsPeriodSec: 30
+MonoMinThreadpoolSize: 100
+UseInternalSsl: False
+SkipDbVerify: False
 EOFCONF
 
 echo
