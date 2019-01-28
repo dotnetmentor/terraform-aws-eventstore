@@ -155,6 +155,9 @@ data "template_file" "eventstore_init" {
     backups_s3_bucket_region         = "${var.backups_s3_enabled ? module.backups.bucket_region : ""}"
     backups_s3_aws_access_key_id     = "${var.backups_s3_enabled ? module.backups.iam_access_key_id : ""}"
     backups_s3_aws_secret_access_key = "${var.backups_s3_enabled ? module.backups.iam_secret_access_key : ""}"
+
+    scavenging_cron_enabled      = "${var.scavenging_cron_enabled ? true : false}"
+    scavenging_cron_setup_script = "${module.scavenging.cron_setup_script}"
   }
 }
 
@@ -284,4 +287,17 @@ module "backups" {
   bucket_region = "${var.region}"
   bucket_name   = "${local.full_cluster_name}-backups"
   cluster_name  = "${local.full_cluster_name}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# SCAVENGING
+# ---------------------------------------------------------------------------------------------------------------------
+
+module "scavenging" {
+  source = "./modules/scavenging"
+
+  enabled        = "${var.scavenging_cron_enabled}"
+  cron_schedules = "${var.scavenging_cron_schedules}"
+  admin_username = "${var.scavenging_cron_admin_username}"
+  admin_password = "${var.scavenging_cron_admin_password}"
 }

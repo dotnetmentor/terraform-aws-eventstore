@@ -140,3 +140,24 @@ variable "backups_s3_setup_script" {
   description = "Script that will be executed during init to setup backups"
   default     = ""
 }
+
+variable "scavenging_cron_enabled" {
+  description = "Enable scavenging"
+  default     = false
+}
+
+variable "scavenging_cron_schedules" {
+  type        = "map"
+  description = "The cidr block/cron schedule map"
+  default     = {}
+}
+
+variable "scavenging_cron_admin_username" {
+  description = "The admin username to use for scavenging"
+  default     = "admin"
+}
+
+variable "scavenging_cron_admin_password" {
+  description = "The admin password to use for scavenging"
+  default     = "changeit"
+}

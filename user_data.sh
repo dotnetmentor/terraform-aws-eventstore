@@ -15,6 +15,7 @@ export BACKUPS_S3_BUCKET_NAME='${backups_s3_bucket_name}'
 export BACKUPS_S3_BUCKET_REGION='${backups_s3_bucket_region}'
 export BACKUPS_S3_AWS_ACCESS_KEY_ID='${backups_s3_aws_access_key_id}'
 export BACKUPS_S3_AWS_SECRET_ACCESS_KEY_ID='${backups_s3_aws_secret_access_key}'
+export SCAVENGING_CRON_ENABLED='${scavenging_cron_enabled}'
 
 echo
 echo 'Ensuring apt-get is updated (at least once)'
@@ -181,4 +182,9 @@ systemctl status eventstore
 if [[ "$${BACKUPS_S3_ENABLED}" == 'true' ]]; then
   echo 'Configuring S3 backups (using backups_s3_setup_script)'
   ${backups_s3_setup_script}
+fi
+
+if [[ "$${SCAVENGING_CRON_ENABLED}" == 'true' ]]; then
+  echo 'Configuring scavenging cron (using scavenging_cron_setup_script)'
+  ${scavenging_cron_setup_script}
 fi
