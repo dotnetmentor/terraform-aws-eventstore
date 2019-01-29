@@ -7,21 +7,21 @@ install-scavenging-crontab () {
 
   local cidr_blocks
   local cron_schedules
+  local cron_schedule
   local ip
   local index
 
   cidr_blocks=(${cidr_blocks})
   cron_schedules=(${cron_schedules})
   ip="$(ec2metadata --local-ipv4)"
-  index=0
 
-  for cidr_block in $${cidr_blocks[*]}; do
+  for (( index = 0; index < $${#cidr_blocks[*]}; index++ )); do
+    cidr_block="$${cidr_blocks[index]}"
     if grepcidr "$${cidr_block:?}" <(echo "$${ip:?}") >/dev/null; then
       cron_schedule="$${cron_schedules[index]}"
       echo "$${ip:?} is in range of $${cidr_block:?}"
       echo "using cron schedule $${cron_schedule:?}"
     fi
-    index=$$((index++))
   done
 
   if [[ "$${cron_schedule}" != "" ]]; then
