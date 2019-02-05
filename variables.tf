@@ -116,6 +116,11 @@ variable "instance_timezone" {
   default     = "UTC"
 }
 
+variable "instance_detailed_monitoring" {
+  description = "Enabled detailed monitoring on EC2 instances"
+  default     = false
+}
+
 variable "log_forwarding_elasticsearch_enabled" {
   description = "Enable log aggregation using fluentbit and eleasticsearch"
   default     = false

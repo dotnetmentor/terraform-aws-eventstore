@@ -110,6 +110,8 @@ resource "aws_launch_configuration" "eventstore" {
 
   user_data = "${data.template_file.eventstore_init.rendered}"
 
+  enable_monitoring = "${var.instance_detailed_monitoring}"
+
   ebs_optimized = "${lookup(local.ebs_optimized, var.instance_type, false)}"
 
   ebs_block_device {
