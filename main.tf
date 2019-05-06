@@ -139,12 +139,14 @@ data "template_file" "eventstore_init" {
   template = "${file("${path.module}/user_data.sh")}"
 
   vars {
-    environment       = "${var.environment}"
-    cluster_version   = "${var.cluster_version}"
-    cluster_size      = "${var.cluster_size}"
-    cluster_dns       = "${var.cluster_dns}"
-    external_ip_type  = "${var.cluster_external_ip_type == "private" ? "local" : "public"}"
-    internal_ip_type  = "${var.cluster_internal_ip_type == "private" ? "local" : "public"}"
+    environment      = "${var.environment}"
+    cluster_version  = "${var.cluster_version}"
+    cluster_size     = "${var.cluster_size}"
+    cluster_dns      = "${var.cluster_dns}"
+    external_ip_type = "${var.cluster_external_ip_type == "private" ? "local" : "public"}"
+    internal_ip_type = "${var.cluster_internal_ip_type == "private" ? "local" : "public"}"
+    stats_period_sec = "${var.cluster_stats_period_sec}"
+
     instance_timezone = "${var.instance_timezone}"
 
     log_forwarding_elasticsearch_enabled  = "${var.log_forwarding_elasticsearch_enabled ? true : false}"

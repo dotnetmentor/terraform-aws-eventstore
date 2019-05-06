@@ -12,12 +12,19 @@ Terraform module for bringing up a clustered Eventstore in AWS.
 - [AWS](https://aws.amazon.com/)
 - [Terraform](https://www.terraform.io/)
 
-## Resource types
+## Resource types - main module
 
 - Auto Scaling Group
 - Launch Configuration
 - Security Group
 - Key Pair
+
+## Resource types - s3-backup module
+
+- S3 Bucket
+- S3 Bucket Policy
+- IAM User
+- IAM Access Key
 
 ## Usage
 

@@ -23,7 +23,7 @@ apt-get update
 
 echo
 echo 'Adding hostname to hosts'
-echo "127.0.0.1 $(hostname)" >> /etc/hosts
+echo "127.0.0.1 $(hostname)" >>/etc/hosts
 cat /etc/hosts
 
 echo
@@ -36,7 +36,10 @@ echo
 echo "Ensure timezone is set to ${instance_timezone}"
 timedatectl set-timezone ${instance_timezone}
 timedatectl
-if ! timedatectl | grep "${instance_timezone}" -q; then echo "Failed to set timezone!"; exit 1; fi
+if ! timedatectl | grep "${instance_timezone}" -q; then
+  echo "Failed to set timezone!"
+  exit 1
+fi
 
 echo
 echo 'Ensuring chrony is setup (NTP)'
@@ -56,7 +59,7 @@ dumpdir /var/lib/chrony
 logchange 0.5
 hwclockfile /etc/adjtime
 rtcsync
-" > /etc/chrony/chrony.conf
+" >/etc/chrony/chrony.conf
 service chrony restart
 service chrony status
 
@@ -66,7 +69,7 @@ if [[ "$${LOG_FORWARDING_ENABLED}" == "true" ]]; then
   wget -qO - https://packages.fluentbit.io/fluentbit.key | apt-key add -
   echo "
   ## fluentbit
-  deb https://packages.fluentbit.io/ubuntu/xenial xenial main" >> /etc/apt/sources.list
+  deb https://packages.fluentbit.io/ubuntu/xenial xenial main" >>/etc/apt/sources.list
   apt-get update
   apt-get install td-agent-bit
 
@@ -101,7 +104,7 @@ if [[ "$${LOG_FORWARDING_ENABLED}" == "true" ]]; then
     Retry_Limit     False
     Include_Tag_Key True
     Tag_Key         FLB_KEY
-" > /etc/td-agent-bit/td-agent-bit.conf
+" >/etc/td-agent-bit/td-agent-bit.conf
 
   echo
   echo 'Starting fluentbit'
@@ -141,7 +144,7 @@ rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* || true
 
 echo
 echo 'Configuring eventstore'
-cat <<EOFCONF > "/etc/eventstore/eventstore.conf"
+cat <<EOFCONF >"/etc/eventstore/eventstore.conf"
 ---
 Db: $${ES_DB_PATH}
 Log: $${ES_LOG_PATH}
@@ -168,7 +171,7 @@ GossipTimeoutMs: 3000
 GossipAllowedDifferenceMs: 15000
 RunProjections: None
 StartStandardProjections: True
-StatsPeriodSec: 60
+StatsPeriodSec: ${stats_period_sec}
 MonoMinThreadpoolSize: 100
 UseInternalSsl: False
 SkipDbVerify: False

@@ -81,6 +81,11 @@ variable "cluster_internal_ip_type" {
   default     = "private"
 }
 
+variable "cluster_stats_period_sec" {
+  description = "The number of seconds between statistics gathers"
+  default     = 30
+}
+
 variable "instance_ami" {
   description = "The AMI to use for cluster instances (Leave empty to use the latest Ubuntu 16.04 Canonical)"
   default     = ""
