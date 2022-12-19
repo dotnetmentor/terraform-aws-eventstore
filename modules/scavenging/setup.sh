@@ -29,7 +29,7 @@ install-scavenging-crontab () {
     mkdir -p "$${crondir:?}" &> /dev/null
 
     echo "SHELL=/bin/bash
-$${cron_schedule:?} root curl -i -d {} -X POST http://localhost:2113/admin/scavenge -u '${admin_username}:${admin_password}' 2>&1 | /usr/bin/logger -t eventstore-scavenging-cron
+$${cron_schedule:?} root curl -i -d {} -X POST http://localhost:2113/admin/scavenge -u '${eventstore_username}:${eventstore_password}' 2>&1 | /usr/bin/logger -t eventstore-scavenging-cron
 " > $${crontab:?}
   fi
 }

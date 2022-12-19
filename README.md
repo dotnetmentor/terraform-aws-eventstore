@@ -16,7 +16,10 @@ Terraform module for bringing up a clustered Eventstore in AWS.
 
 - Auto Scaling Group
 - Launch Configuration
-- Security Group
+- EBS Volumes
+- IAM Role
+- IAM Instance Profile
+- Security Groups
 - Key Pair
 
 ## Resource types - s3-backup module
@@ -25,6 +28,10 @@ Terraform module for bringing up a clustered Eventstore in AWS.
 - S3 Bucket Policy
 - IAM User
 - IAM Access Key
+
+## Resource types - cloudwatch-agent module
+
+- AWS IAM Role Policy Attachment
 
 ## Usage
 

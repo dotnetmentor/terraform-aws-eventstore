@@ -7,7 +7,7 @@ variable "enabled" {
 }
 
 variable "cron_schedules" {
-  type        = "map"
+  type        = map
   description = "The cidr block/cron schedule map"
 }
 
@@ -15,12 +15,12 @@ variable "cron_schedules" {
 # OPTIONAL
 # ---------------------------------------------------------------------------------------------------------------------
 
-variable "admin_username" {
-  description = "The admin username to use for scavenging"
+variable "eventstore_username" {
+  description = "The username used for scavenging"
   default     = "admin"
 }
 
-variable "admin_password" {
-  description = "The admin password to use for scavenging"
+variable "eventstore_password" {
+  description = "The password used for scavenging"
   default     = "changeit"
 }

@@ -19,12 +19,12 @@ variable "cluster_vpc_id" {
 }
 
 variable "cluster_azs" {
-  type        = "list"
+  type        = list
   description = "Availability zones to place cluster instances in (may be empty if cluster_subnets is specified)"
 }
 
 variable "cluster_subnets" {
-  type        = "list"
+  type        = list
   description = "A list of subnet id's to place cluster instances in (may be empty if cluster_azs is specified)"
 }
 
@@ -66,9 +66,9 @@ variable "cluster_dns" {
 }
 
 variable "cluster_allowed_cidr_blocks" {
-  type        = "list"
+  type        = list
   description = "A list of CIDR blocks that is allowed access to the Eventstore"
-  default     = ["0.0.0.0/0"]                                                    # Defaults to everyone and everything
+  default     = ["0.0.0.0/0"] # Defaults to everyone and everything
 }
 
 variable "cluster_external_ip_type" {
@@ -141,6 +141,11 @@ variable "log_forwarding_elasticsearch_port" {
   default     = 443
 }
 
+variable "cloudwatch_agent_enabled" {
+  description = "Enable the AWS Cloudwatch Agent to collect additional instance metrics"
+  default     = false
+}
+
 variable "backups_s3_enabled" {
   description = "Enable backups to S3"
   default     = false
@@ -157,17 +162,38 @@ variable "scavenging_cron_enabled" {
 }
 
 variable "scavenging_cron_schedules" {
-  type        = "map"
+  type        = map
   description = "The cidr block/cron schedule map"
   default     = {}
 }
 
-variable "scavenging_cron_admin_username" {
-  description = "The admin username to use for scavenging"
+variable "scavenging_cron_eventstore_username" {
+  description = "The username used for scavenging"
   default     = "admin"
 }
 
-variable "scavenging_cron_admin_password" {
-  description = "The admin password to use for scavenging"
+variable "scavenging_cron_eventstore_password" {
+  description = "The password used for scavenging"
   default     = "changeit"
+}
+
+variable "additional_user_data_enabled" {
+  description = "Enable running additional user_data script"
+  default     = false
+}
+
+variable "additional_user_data_pre_install_script" {
+  description = "Pre install user_data script"
+  default     = ""
+}
+
+variable "additional_user_data_post_install_script" {
+  description = "Post install user_data script"
+  default     = ""
+}
+
+variable "additional_ports" {
+  description = "Additional ports to be opened by adding inbound rules to the security group"
+  type        = list
+  default     = []
 }

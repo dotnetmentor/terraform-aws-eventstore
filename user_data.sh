@@ -16,6 +16,12 @@ export BACKUPS_S3_BUCKET_REGION='${backups_s3_bucket_region}'
 export BACKUPS_S3_AWS_ACCESS_KEY_ID='${backups_s3_aws_access_key_id}'
 export BACKUPS_S3_AWS_SECRET_ACCESS_KEY_ID='${backups_s3_aws_secret_access_key}'
 export SCAVENGING_CRON_ENABLED='${scavenging_cron_enabled}'
+export ADDITIONAL_USER_DATA_ENABLED='${additional_user_data_enabled}'
+
+if [[ "$${ADDITIONAL_USER_DATA_ENABLED}" == 'true' ]]; then
+  echo 'Running pre install script (using additional_user_data_pre_install_script)'
+  ${additional_user_data_pre_install_script}
+fi
 
 echo
 echo 'Ensuring apt-get is updated (at least once)'
@@ -71,7 +77,7 @@ if [[ "$${LOG_FORWARDING_ENABLED}" == "true" ]]; then
   ## fluentbit
   deb https://packages.fluentbit.io/ubuntu/xenial xenial main" >>/etc/apt/sources.list
   apt-get update
-  apt-get install td-agent-bit
+  apt-get install td-agent-bit -y
 
   echo
   echo 'Configure fluentbit'
@@ -104,19 +110,21 @@ if [[ "$${LOG_FORWARDING_ENABLED}" == "true" ]]; then
     Retry_Limit     False
     Include_Tag_Key True
     Tag_Key         FLB_KEY
+    Generate_ID     True
 " >/etc/td-agent-bit/td-agent-bit.conf
 
   echo
   echo 'Starting fluentbit'
-  service td-agent-bit restart
-  service td-agent-bit status
+  systemctl enable td-agent-bit
+  systemctl restart td-agent-bit
+  systemctl status td-agent-bit
 fi
 
 echo
 echo 'Installing Eventstore'
 apt-get install tzdata curl iproute2 -y
 curl -s "$${ES_INSTALL_URL}" | bash
-apt-get install eventstore-oss="$${ES_VERSION}" -y
+apt-get install eventstore-oss="$${ES_VERSION}" -y --allow-unauthenticated
 
 echo
 echo 'Installing ZFS'
@@ -143,6 +151,10 @@ apt-get clean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* || true
 
 echo
+echo 'Optionionally install the AWS Cloudwatch Agent'
+${cloudwatch_agent_setup_script}
+
+echo
 echo 'Configuring eventstore'
 cat <<EOFCONF >"/etc/eventstore/eventstore.conf"
 ---
@@ -151,10 +163,10 @@ Log: $${ES_LOG_PATH}
 ClusterSize: ${cluster_size}
 ClusterGossipPort: 2112
 ClusterDns: ${cluster_dns}
-IntIp: $$(ec2metadata --local-ipv4)
-ExtIp: $$(ec2metadata --local-ipv4)
-IntIpAdvertiseAs: $$(ec2metadata --${internal_ip_type}-ipv4)
-ExtIpAdvertiseAs: $$(ec2metadata --${external_ip_type}-ipv4)
+IntIp: $(ec2metadata --local-ipv4)
+ExtIp: $(ec2metadata --local-ipv4)
+IntIpAdvertiseAs: $(ec2metadata --${internal_ip_type}-ipv4)
+ExtIpAdvertiseAs: $(ec2metadata --${external_ip_type}-ipv4)
 IntHttpPrefixes: http://*:2112/
 ExtHttpPrefixes: http://*:2113/
 AddInterfacePrefixes: False
@@ -179,6 +191,7 @@ EOFCONF
 
 echo
 echo 'Starting eventstore'
+systemctl enable eventstore
 systemctl start eventstore
 systemctl status eventstore
 
@@ -190,4 +203,9 @@ fi
 if [[ "$${SCAVENGING_CRON_ENABLED}" == 'true' ]]; then
   echo 'Configuring scavenging cron (using scavenging_cron_setup_script)'
   ${scavenging_cron_setup_script}
+fi
+
+if [[ "$${ADDITIONAL_USER_DATA_ENABLED}" == 'true' ]]; then
+  echo 'Running post install script (using additional_user_data_post_install_script)'
+  ${additional_user_data_post_install_script}
 fi
